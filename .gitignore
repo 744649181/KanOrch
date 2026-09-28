@@ -1,0 +1,8 @@
+node_modules/
+apps/web/dist/
+.strew/
+out/
+*.log
+.env
+.env.*
+!.env.example

@@ -197,9 +197,13 @@ function hasPendingEquivalent(state: ProjectState, signal: ReplanSignal): boolea
 }
 
 function isWithinScopes(path: string, scopes: readonly string[]): boolean {
-  const normalizedPath = path.replaceAll("\\", "/").replace(/^\.\//, "").toLowerCase();
+  const normalize = (value: string) => {
+    const normalized = value.replaceAll("\\", "/").replace(/^\.\//, "").replace(/\/$/, "");
+    return process.platform === "win32" ? normalized.toLowerCase() : normalized;
+  };
+  const normalizedPath = normalize(path);
   return scopes.some((scope) => {
-    const normalizedScope = scope.replaceAll("\\", "/").replace(/^\.\//, "").replace(/\/$/, "").toLowerCase() || ".";
+    const normalizedScope = normalize(scope) || ".";
     return normalizedScope === "." || normalizedPath === normalizedScope || normalizedPath.startsWith(`${normalizedScope}/`);
   });
 }

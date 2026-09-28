@@ -1,4 +1,4 @@
-# KanOrch runtime (internal directory: `strew/`)
+# KanOrch
 
 KanOrch builds on this local-first, model-neutral director for multi-agent software delivery. A human
 creates a project goal; KanOrch can turn it into an independently reviewed work graph, then
@@ -7,9 +7,8 @@ isolated Git worktrees, records every run and artifact, enforces review/test/bud
 and merges only when policy authorizes it. Drift, repeated failures, permissions, conflicts,
 and budget overruns are converted into persisted decisions instead of hidden retry loops.
 
-The legacy Python K-now board is a compatibility input; a Cline Kanban 0.1.70 snapshot remains
-in older worktrees and is not required to run this branch. SQLite and the domain model in this
-directory are the source of truth. KanOrch is standalone: Herdr is design reference only.
+The legacy Python K-now board is a compatibility input. SQLite and the domain model in this
+repository are the source of truth. KanOrch is standalone: Herdr is design reference only.
 The current adapters launch coding CLIs directly. An interactive PTY session and terminal
 pane now support input, resize, stop, and browser reconnect while the runtime stays alive.
 
@@ -18,8 +17,8 @@ pane now support input, resize, stop, and browser reconnect while the runtime st
 - Node.js 24 or newer (`node:sqlite` is used directly)
 - pnpm 11
 - Git
-- On Windows, a supported x64 `node-pty` prebuilt binary (validated locally); other platforms
-  require their own native-module installation check
+- `node-pty` uses Windows/macOS prebuilt binaries when available and builds from source on Linux;
+  Linux needs Python 3, `make`, and a C++ build toolchain. macOS source builds need Xcode tools.
 - At least one installed CLI for manual runs; a complete automatic delivery crew needs an
   implementation agent, a distinct review identity, and a testing agent
 
@@ -34,14 +33,28 @@ separate process/container sandbox is needed before relying on filesystem or net
 ## Run locally
 
 ```powershell
-cd strew
+cd KanOrch
 pnpm install
-pnpm start
+pnpm start:headless
 ```
 
-Open <http://127.0.0.1:4174>. The runtime binds to loopback only. By default it stores its
-database at `strew/.strew/strew.db`; override the location and port with `KANORCH_DATA_DIR` and
-`KANORCH_PORT`. The former `STREW_*` names remain accepted for existing setups.
+On Linux or macOS, run the same `pnpm install` and `pnpm start:headless` commands from the
+repository root. Open <http://127.0.0.1:4174>. The runtime binds to loopback only, including
+on a headless server. For remote use, connect through an SSH tunnel to the server's local port.
+Headless mode stores data in `.strew/strew.db` under the repository by default; override the
+directory and port with `KANORCH_DATA_DIR` and `KANORCH_PORT`. The former `STREW_*` names remain
+accepted for existing setups. `pnpm start` is an alias for `start:headless`.
+
+For a native window on Windows, Linux, or macOS, run `pnpm start:desktop` from the repository
+root. Electron starts the same local runtime and opens the board in an isolated window. Desktop
+mode stores data in the platform's KanOrch user-data directory by default; set
+`KANORCH_DATA_DIR` to use a specific data directory. The desktop launcher needs Node 24 on
+`PATH`; it runs the runtime as a separate Node process so native PTY modules use the same ABI
+in both modes. Run only one KanOrch instance against a given data directory at a time.
+
+These are source launch modes, not installers. Windows and Ubuntu (WSL) have passed local
+desktop smoke tests; macOS remains unverified. The cross-platform CI configuration is in
+`.github/workflows/cross-platform.yml` and must pass before a release.
 
 From the Web director:
 
@@ -123,6 +136,9 @@ KanOrch local runtime
          ├─ isolated Git worktrees
          ├─ complete tracked/untracked diff capture
          └─ guarded Git merge
+
+Headless: browser → local runtime
+Desktop: Electron window → the same local runtime (separate Node process)
 ```
 
 Large logs and diffs live under `<repository>/.strew/artifacts`; their SHA-256 hashes and
@@ -141,7 +157,7 @@ excluded from KanOrch quality gates, so it cannot silently authorize new executi
 ## Verification
 
 ```powershell
-cd strew
+cd KanOrch
 pnpm typecheck
 pnpm test
 pnpm build:web
@@ -160,4 +176,4 @@ path, and Agent read receipts are not yet implemented. On Windows,
 node-pty may print `AttachConsole failed` during stop because of an upstream ConPTY race.
 
 The current product boundary and next acceptance criteria are in
-[`../PROJECT.md`](../PROJECT.md) and [`../docs/roadmap.md`](../docs/roadmap.md).
+[`PROJECT.md`](PROJECT.md) and [`docs/roadmap.md`](docs/roadmap.md).

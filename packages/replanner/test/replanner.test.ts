@@ -105,6 +105,13 @@ test("replanner detects code-scope goal drift from captured workspace changes", 
   });
   assert.equal(signals.some((signal) => signal.trigger === "goal_drift"), true);
   assert.match(signals.find((signal) => signal.trigger === "goal_drift")?.currentState ?? "", /outside\/drift\.ts/);
+  const caseSignals = new Replanner().detectAutomatic(state, {
+    workItemId: "W-1",
+    runId: "run-drift",
+    runEvents: [],
+    changedPaths: ["SRC/allowed.ts"],
+  });
+  assert.equal(caseSignals.some((signal) => signal.trigger === "goal_drift"), process.platform !== "win32");
 });
 
 test("read-only planning metadata does not trigger implementation goal drift", () => {

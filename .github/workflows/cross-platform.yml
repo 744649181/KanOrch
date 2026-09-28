@@ -1,0 +1,42 @@
+name: Cross-platform checks
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest, macos-15-intel]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Linux native and display dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y make python3 build-essential xvfb
+      - run: npm install --global pnpm@11.19.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm build:web
+      - run: pnpm test
+      - name: Desktop window smoke test
+        if: runner.os != 'Linux'
+        env:
+          KANORCH_DESKTOP_SMOKE: '1'
+          KANORCH_PORT: '0'
+        run: pnpm exec electron apps/desktop/main.mjs
+      - name: Linux desktop window smoke test
+        if: runner.os == 'Linux'
+        env:
+          KANORCH_DESKTOP_SMOKE: '1'
+          KANORCH_PORT: '0'
+        run: xvfb-run -a pnpm exec electron apps/desktop/main.mjs

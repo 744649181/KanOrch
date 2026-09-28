@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { resolve } from "node:path";
 import test from "node:test";
 
 import {
@@ -100,7 +101,7 @@ test("workspace leases enforce a single writer for overlapping code areas", () =
       leaseId: "lease-a",
       workItemId: "A",
       runId: "run-a",
-      worktreePath: "C:/worktrees/a",
+      worktreePath: resolve("worktrees/a"),
       branchName: "strew/a",
       codeScopes: ["src/runtime"],
     }),
@@ -110,7 +111,7 @@ test("workspace leases enforce a single writer for overlapping code areas", () =
       decideAcquireWorkspaceLease(state, {
         workItemId: "B",
         runId: "run-b",
-        worktreePath: "C:/worktrees/b",
+        worktreePath: resolve("worktrees/b"),
         branchName: "strew/b",
         codeScopes: ["src/runtime/server"],
       }),
@@ -120,7 +121,7 @@ test("workspace leases enforce a single writer for overlapping code areas", () =
     decideAcquireWorkspaceLease(state, {
       workItemId: "B",
       runId: "run-b",
-      worktreePath: "C:/worktrees/b",
+      worktreePath: resolve("worktrees/b"),
       branchName: "strew/b",
       codeScopes: ["src/web"],
     }),
@@ -130,7 +131,7 @@ test("workspace leases enforce a single writer for overlapping code areas", () =
     decideAcquireWorkspaceLease(state, {
       workItemId: "B",
       runId: "run-b",
-      worktreePath: "C:/worktrees/b",
+      worktreePath: resolve("worktrees/b"),
       branchName: "strew/b",
       codeScopes: ["src/runtime/server"],
     }),
