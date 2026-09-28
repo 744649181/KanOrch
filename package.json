@@ -1,0 +1,50 @@
+{
+  "name": "kanorch",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "test": "node --test packages/domain/test/domain.test.ts packages/event-store/test/sqlite-event-store.test.ts packages/control-plane/test/project-repository.test.ts packages/scheduler/test/scheduler.test.ts packages/quality-gates/test/quality-gates.test.ts packages/quality-gates/test/git-merge-executor.test.ts packages/replanner/test/replanner.test.ts packages/migration/test/k-now-importer.test.ts packages/artifact-store/test/artifact-store.test.ts packages/adapters/test/adapters.test.ts packages/adapters/test/cline-execution-adapter.test.ts packages/agent-runtime/test/process-runner.test.ts packages/agent-runtime/test/run-coordinator.test.ts packages/director/test/director.test.ts packages/planner/test/planner.test.ts apps/runtime/test/server.test.ts apps/runtime/test/terminal.test.ts apps/web/test/project-presence.test.ts",
+    "test:domain": "node --test packages/domain/test/domain.test.ts",
+    "test:event-store": "node --test packages/event-store/test/sqlite-event-store.test.ts",
+    "test:control-plane": "node --test packages/control-plane/test/project-repository.test.ts",
+    "test:adapters": "node --test packages/adapters/test/adapters.test.ts packages/adapters/test/cline-execution-adapter.test.ts",
+    "test:agent-runtime": "node --test packages/agent-runtime/test/process-runner.test.ts packages/agent-runtime/test/run-coordinator.test.ts",
+    "test:scheduler": "node --test packages/scheduler/test/scheduler.test.ts",
+    "test:quality": "node --test packages/quality-gates/test/quality-gates.test.ts packages/quality-gates/test/git-merge-executor.test.ts",
+    "test:replanner": "node --test packages/replanner/test/replanner.test.ts",
+    "test:migration": "node --test packages/migration/test/k-now-importer.test.ts",
+    "test:director": "node --test packages/director/test/director.test.ts",
+    "test:artifacts": "node --test packages/artifact-store/test/artifact-store.test.ts",
+    "test:runtime": "node --test apps/runtime/test/server.test.ts apps/runtime/test/terminal.test.ts",
+    "test:planner": "node --test packages/planner/test/planner.test.ts",
+    "dev:runtime": "tsx watch apps/runtime/src/main.ts",
+    "dev:web": "vite --config apps/web/vite.config.mjs --configLoader runner",
+    "build:web": "vite build --config apps/web/vite.config.mjs --configLoader runner",
+    "start": "pnpm build:web && node apps/runtime/src/main.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "node-pty": "1.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "ws": "^8.18.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^18.3.24",
+    "@types/react-dom": "^18.3.7",
+    "@types/ws": "^8.18.1",
+    "@vitejs/plugin-react": "^5.0.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.2"
+  }
+}
